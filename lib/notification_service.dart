@@ -9,12 +9,12 @@ class NotificationService {
 
   // Initialize notification settings
   static Future<void> init() async {
-    const AndroidInitializationSettings androidSettings =
-        AndroidInitializationSettings(
-          '@mipmap/ic_launcher',
-        ); // Use your app icon
+    // Initialize timezone first
+    tz_init.initializeTimeZones();
 
-    // Add iOS initialization settings
+    const AndroidInitializationSettings androidSettings =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
     const DarwinInitializationSettings iosSettings =
         DarwinInitializationSettings(
           requestAlertPermission: true,
@@ -27,40 +27,20 @@ class NotificationService {
       iOS: iosSettings,
     );
 
-    await _notificationsPlugin.initialize(settings);
-
-    // Initialize timezone
-    tz_init.initializeTimeZones();
-  }
-
-  // Show a notification
-  static Future<void> showNotification(String title, String body) async {
-    const AndroidNotificationDetails androidDetails =
-        AndroidNotificationDetails(
-          'channel_id', // Unique channel ID
-          'General Notifications', // Channel name
-          importance: Importance.high,
-          priority: Priority.high,
-        );
-
-    // Add iOS notification details
-    const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
-      presentAlert: true,
-      presentBadge: true,
-      presentSound: true,
+    // Initialize the plugin
+    await _notificationsPlugin.initialize(
+      settings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        // Handle notification tap
+      },
     );
 
-    const NotificationDetails notificationDetails = NotificationDetails(
-      android: androidDetails,
-      iOS: iosDetails,
-    );
-
-    await _notificationsPlugin.show(
-      0, // Notification ID
-      title, // Title
-      body, // Body
-      notificationDetails,
-    );
+    // Request permissions for iOS
+    await _notificationsPlugin
+        .resolvePlatformSpecificImplementation<
+          IOSFlutterLocalNotificationsPlugin
+        >()
+        ?.requestPermissions(alert: true, badge: true, sound: true);
   }
 
   // Schedule notifications for all events in the data list
@@ -86,8 +66,12 @@ class NotificationService {
           AndroidNotificationDetails(
             'event_channel_id',
             'Event Notifications',
+            channelDescription: 'Notifications for Avurudu events',
             importance: Importance.high,
             priority: Priority.high,
+            enableVibration: true,
+            enableLights: true,
+            playSound: true,
           );
 
       const DarwinNotificationDetails iosDetails = DarwinNotificationDetails(
@@ -103,7 +87,7 @@ class NotificationService {
 
       // Schedule the notification
       await _notificationsPlugin.zonedSchedule(
-        event.id, // Use event ID as notification ID
+        event.id,
         event.name,
         event.description,
         tz.TZDateTime.from(eventDateTime, tz.local),
