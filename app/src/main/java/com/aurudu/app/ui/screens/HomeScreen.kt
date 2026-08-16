@@ -27,6 +27,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -38,10 +39,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale.Companion.FillWidth
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.aurudu.app.R
 import com.aurudu.app.data.Event
 import com.aurudu.app.data.eventList
@@ -63,28 +67,48 @@ fun HomeScreen() {
         ActivityResultContracts.RequestPermission()
     ) { /* result ignored — NotificationHelper re-checks at fire time */ }
 
+    // One-time POST_NOTIFICATIONS request on first composition.
     LaunchedEffect(Unit) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
+    }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+    // Exact-alarm Settings intent: delayed so it doesn't launch in the same
+    // frame as the POST_NOTIFICATIONS dialog above (which would dismiss it
+    // before the user can respond), and gated to fire at most once per
+    // process lifetime.
+    var exactAlarmPromptShown by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !exactAlarmPromptShown) {
+            delay(500)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (!alarmManager.canScheduleExactAlarms()) {
+                exactAlarmPromptShown = true
+                val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
+                    data = Uri.parse("package:${context.packageName}")
+                }
                 try {
-                    val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                        data = Uri.parse("package:${context.packageName}")
-                    }
-                    if (intent.resolveActivity(context.packageManager) != null) {
-                        context.startActivity(intent)
-                    }
-                } catch (_: Exception) {
+                    context.startActivity(intent)
+                } catch (_: android.content.ActivityNotFoundException) {
                     // Settings screen unavailable on this OEM build — don't crash.
                 }
             }
         }
+    }
 
-        NotificationScheduler.scheduleAll(context)
+    // Re-attempt scheduling on every resume so returning from the exact-alarm
+    // Settings screen (having granted the permission) actually retries the
+    // scheduling that silently no-ops while the permission is still missing.
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                NotificationScheduler.scheduleAll(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
 
     var nextEvent by remember {

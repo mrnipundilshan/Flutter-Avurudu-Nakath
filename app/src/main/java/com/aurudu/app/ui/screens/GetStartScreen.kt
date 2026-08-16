@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
@@ -136,50 +137,61 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState()),
         ) {
-            Text(
-                text = "අපේ අවුරුදු නැකැත්",
-                fontFamily = AppFonts.Disapamok,
-                fontWeight = FontWeight.Medium,
-                fontSize = 48.sp,
-                color = Color.Black,
+            // The offset-positioned children below don't contribute to measured
+            // content height (Modifier.offset is draw/placement-only), so without
+            // this explicit min height the verticalScroll above would have zero
+            // scrollable range and the lowest button (Tamil, at y=694.dp+50.dp
+            // tall) could be clipped off-screen with no way to reach it.
+            Box(
                 modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = 330.dp),
-            )
-
-            Text(
-                text = "புத்தாண்டு வாழ்த்துக்கள்",
-                fontFamily = AppFonts.Disapamok,
-                fontWeight = FontWeight.ExtraBold,
-                fontSize = 14.sp,
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = 548.dp),
-            )
-
-            Button(
-                onClick = onSinhalaSelected,
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = 630.dp)
-                    .size(width = 300.dp, height = 50.dp),
+                    .fillMaxWidth()
+                    .heightIn(min = 780.dp),
             ) {
-                Text(text = "සිංහල", fontSize = 25.sp)
-            }
+                Text(
+                    text = "අපේ අවුරුදු නැකැත්",
+                    fontFamily = AppFonts.Disapamok,
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 48.sp,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = 330.dp),
+                )
 
-            Button(
-                onClick = { /* Tamil not yet supported — matches Flutter placeholder */ },
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .offset(y = 694.dp)
-                    .size(width = 300.dp, height = 50.dp),
-            ) {
-                Text(text = "தமிழ்", fontSize = 25.sp)
+                Text(
+                    text = "புத்தாண்டு வாழ்த்துக்கள்",
+                    fontFamily = AppFonts.Disapamok,
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 14.sp,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = 548.dp),
+                )
+
+                Button(
+                    onClick = onSinhalaSelected,
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = 630.dp)
+                        .size(width = 300.dp, height = 50.dp),
+                ) {
+                    Text(text = "සිංහල", fontSize = 25.sp)
+                }
+
+                Button(
+                    onClick = { /* Tamil not yet supported — matches Flutter placeholder */ },
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = 694.dp)
+                        .size(width = 300.dp, height = 50.dp),
+                ) {
+                    Text(text = "தமிழ்", fontSize = 25.sp)
+                }
             }
         }
     }
