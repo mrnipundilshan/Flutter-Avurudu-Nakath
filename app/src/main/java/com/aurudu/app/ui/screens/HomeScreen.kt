@@ -36,6 +36,7 @@ import com.aurudu.app.data.eventList
 import com.aurudu.app.notification.NotificationScheduler
 import com.aurudu.app.ui.components.CountdownBox
 import com.aurudu.app.ui.components.EventListItem
+import com.aurudu.app.ui.components.EventPopupDialog
 import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
 import com.aurudu.app.util.DateTimeUtils
@@ -124,9 +125,8 @@ fun HomeScreen() {
         }
     }
 
-    // Task 8 replaces this with the real EventPopupDialog.
     selectedEvent?.let { event ->
-        HomePopupPlaceholder(event = event, onDismiss = { selectedEvent = null })
+        EventPopupDialog(event = event, onDismiss = { selectedEvent = null })
     }
 }
 
@@ -188,8 +188,3 @@ private fun CountdownLabel(text: String) {
     )
 }
 
-@Composable
-private fun HomePopupPlaceholder(event: Event, onDismiss: () -> Unit) {
-    // Replaced by EventPopupDialog in Task 8.
-    LaunchedEffect(event) { }
-}
