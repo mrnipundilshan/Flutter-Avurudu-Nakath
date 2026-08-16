@@ -18,10 +18,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.aurudu.app.R
 import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
+import kotlinx.coroutines.delay
 
 @Composable
 fun GetStartScreen(onContinue: () -> Unit) {
@@ -68,6 +66,8 @@ fun GetStartScreen(onContinue: () -> Unit) {
     val pageOpacity = remember { Animatable(0f) }
     LaunchedEffect(Unit) {
         pageOpacity.animateTo(1f, animationSpec = tween(durationMillis = 800))
+        delay(2000)
+        onContinue()
     }
 
     Box(
@@ -140,8 +140,7 @@ fun GetStartScreen(onContinue: () -> Unit) {
             // The offset-positioned children below don't contribute to measured
             // content height (Modifier.offset is draw/placement-only), so without
             // this explicit min height the verticalScroll above would have zero
-            // scrollable range and the button (at y=630.dp+50.dp tall) could be
-            // clipped off-screen with no way to reach it.
+            // scrollable range and the title text could be clipped off-screen.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -157,18 +156,6 @@ fun GetStartScreen(onContinue: () -> Unit) {
                         .align(Alignment.TopCenter)
                         .offset(y = 330.dp),
                 )
-
-                Button(
-                    onClick = onContinue,
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .offset(y = 630.dp)
-                        .size(width = 300.dp, height = 50.dp),
-                ) {
-                    Text(text = "සිංහල", fontSize = 25.sp)
-                }
             }
         }
     }
