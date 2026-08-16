@@ -1,16 +1,13 @@
-# avurudu_nakath
+# Avurudu Nakath
 
-A new Flutter project.
+Native Android app (Kotlin + Jetpack Compose) showing the Sinhala/Tamil New Year (Avurudu) auspicious times (nakath) with live countdowns and scheduled local notifications.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+Open the project root in Android Studio, or build from the command line:
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+./gradlew assembleDebug
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Minimum SDK 24, target/compile SDK 36.
