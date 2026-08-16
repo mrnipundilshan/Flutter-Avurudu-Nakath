@@ -12,8 +12,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -43,6 +45,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.Lifecycle
@@ -164,8 +167,9 @@ fun HomeScreen(language: Language = Language.SINHALA) {
                     text = if (language == Language.TAMIL) "இனிய புத்தாண்டு வாழ்த்துக்கள்" else "සුභ අළුත් අවුරුද්දක් වේවා",
                     fontFamily = AppFonts.forLanguage(language, AppFonts.Disapamok),
                     fontWeight = FontWeight.Medium,
-                    fontSize = 36.sp,
+                    fontSize = if (language == Language.TAMIL) 28.sp else 36.sp,
                     color = Color.Black,
+                    textAlign = TextAlign.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 70.dp, bottom = 20.dp, start = 10.dp, end = 10.dp),
@@ -226,25 +230,22 @@ private fun HomeCountdownCard(
             text = "$nextEventLabel: ${event.localizedName(language)}",
             fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
             fontWeight = FontWeight.Medium,
-            fontSize = 26.sp,
+            fontSize = if (language == Language.TAMIL) 20.sp else 26.sp,
             color = Color.Black,
         )
-        Row(
-            modifier = Modifier.padding(top = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
+        FlowRow(
+            modifier = Modifier.padding(top = 12.dp).fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             val daysLabel = if (language == Language.TAMIL) "நாட்கள்:" else "දින:"
             val hoursLabel = if (language == Language.TAMIL) "மணி:" else "පැය:"
             val minutesLabel = if (language == Language.TAMIL) "நிமி:" else "මිනි:"
             val secondsLabel = if (language == Language.TAMIL) "வினா:" else "තත්:"
-            CountdownLabel(daysLabel, language)
-            CountdownBox(countdown.days)
-            CountdownLabel(hoursLabel, language)
-            CountdownBox(countdown.hours)
-            CountdownLabel(minutesLabel, language)
-            CountdownBox(countdown.minutes)
-            CountdownLabel(secondsLabel, language)
-            CountdownBox(countdown.seconds)
+            CountdownItem(daysLabel, countdown.days, language)
+            CountdownItem(hoursLabel, countdown.hours, language)
+            CountdownItem(minutesLabel, countdown.minutes, language)
+            CountdownItem(secondsLabel, countdown.seconds, language)
         }
         Text(
             text = event.localizedDescription(language),
@@ -259,13 +260,22 @@ private fun HomeCountdownCard(
 }
 
 @Composable
+private fun CountdownItem(label: String, value: String, language: Language) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        CountdownLabel(label, language)
+        CountdownBox(value)
+    }
+}
+
+@Composable
 private fun CountdownLabel(text: String, language: Language) {
     Text(
         text = text,
         fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
         fontWeight = FontWeight.Medium,
-        fontSize = 18.sp,
+        fontSize = if (language == Language.TAMIL) 15.sp else 18.sp,
         color = Color.Black,
+        maxLines = 1,
         modifier = Modifier.padding(end = 4.dp),
     )
 }

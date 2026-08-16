@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -110,13 +111,14 @@ fun EventPopupDialog(event: Event, language: Language = Language.SINHALA, onDism
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
             )
 
-            Row(
+            FlowRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 24.dp, vertical = 16.dp)
                     .background(AppColors.SecondaryCard, RoundedCornerShape(16.dp))
-                    .padding(vertical = 16.dp),
+                    .padding(vertical = 16.dp, horizontal = 8.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 val daysLabel = if (language == Language.TAMIL) "நாட்கள்:" else "දින:"
                 val hoursLabel = if (language == Language.TAMIL) "மணி:" else "පැය:"
@@ -148,8 +150,9 @@ private fun PopupCountdownItem(label: String, value: String, language: Language)
             text = label,
             fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
             fontWeight = FontWeight.Medium,
-            fontSize = 16.sp,
+            fontSize = if (language == Language.TAMIL) 13.sp else 16.sp,
             color = Color.Black,
+            maxLines = 1,
         )
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.size(8.dp))
         Column(
