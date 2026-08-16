@@ -1,6 +1,7 @@
 package com.aurudu.app.util
 
 import com.aurudu.app.data.Event
+import com.aurudu.app.data.eventList
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Test
@@ -67,5 +68,12 @@ class DateTimeUtilsTest {
             Event(1, "Past", "10:00 AM", "2026-04-20", "d", 0),
         )
         assertNull(DateTimeUtils.nextUpcomingEvent(events, now))
+    }
+
+    @Test
+    fun `every event in eventList parses without throwing`() {
+        eventList.forEach { event ->
+            DateTimeUtils.parseDateTime(event.date, event.time)
+        }
     }
 }

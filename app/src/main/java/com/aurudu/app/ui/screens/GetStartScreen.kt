@@ -1,5 +1,6 @@
 package com.aurudu.app.ui.screens
 
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -10,18 +11,26 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -45,10 +54,25 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
         ),
         label = "sunRotation",
     )
+    val sunBreathe by infiniteTransition.animateFloat(
+        initialValue = 0.95f,
+        targetValue = 1.05f,
+        animationSpec = infiniteRepeatable(
+            animation = tween(durationMillis = 2000, easing = LinearEasing),
+            repeatMode = RepeatMode.Reverse,
+        ),
+        label = "sunBreathe",
+    )
+
+    val pageOpacity = remember { Animatable(0f) }
+    LaunchedEffect(Unit) {
+        pageOpacity.animateTo(1f, animationSpec = tween(durationMillis = 800))
+    }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .alpha(pageOpacity.value)
             .background(
                 Brush.radialGradient(
                     colors = listOf(AppColors.GradientTop, AppColors.Primary),
@@ -56,6 +80,28 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
             ),
         contentAlignment = Alignment.TopCenter,
     ) {
+        Image(
+            painter = painterResource(R.drawable.bg1),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .fillMaxWidth(0.8f)
+                .fillMaxHeight(0.4f)
+                .alpha(0.5f),
+            contentScale = ContentScale.Crop,
+        )
+
+        Image(
+            painter = painterResource(R.drawable.bg2),
+            contentDescription = null,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .fillMaxWidth(0.8f)
+                .fillMaxHeight(0.4f)
+                .alpha(0.5f),
+            contentScale = ContentScale.Crop,
+        )
+
         Image(
             painter = painterResource(R.drawable.bg3),
             contentDescription = null,
@@ -71,7 +117,8 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
             modifier = Modifier
                 .offset(y = 90.dp)
                 .size(230.dp)
-                .rotate(sunRotation),
+                .rotate(sunRotation)
+                .scale(sunBreathe),
             contentScale = ContentScale.Crop,
         )
 
@@ -84,7 +131,11 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
             contentScale = ContentScale.Crop,
         )
 
-        BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        BoxWithConstraints(
+            modifier = Modifier
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
+        ) {
             Text(
                 text = "අපේ අවුරුදු නැකැත්",
                 fontFamily = AppFonts.Disapamok,
