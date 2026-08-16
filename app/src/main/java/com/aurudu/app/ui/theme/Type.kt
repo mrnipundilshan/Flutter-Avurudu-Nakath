@@ -2,33 +2,26 @@ package com.aurudu.app.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.aurudu.app.R
 
-// Set of Material typography styles to start with
+object AppFonts {
+    val Disapamok = FontFamily(Font(R.font.un_disapamok, FontWeight.Normal))
+    val Indeewaree = FontFamily(Font(R.font.un_indeewaree, FontWeight.Normal))
+    val Arundathee = FontFamily(Font(R.font.un_arundathee, FontWeight.Normal))
+    val Gurulugomi = FontFamily(Font(R.font.un_gurulugomi, FontWeight.Normal))
+    val Ganganee = FontFamily(Font(R.font.un_ganganee, FontWeight.Normal))
+}
+
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = AppFonts.Gurulugomi,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp
     )
-    /* Other default text styles to override
-    titleLarge = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 22.sp,
-        lineHeight = 28.sp,
-        letterSpacing = 0.sp
-    ),
-    labelSmall = TextStyle(
-        fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Medium,
-        fontSize = 11.sp,
-        lineHeight = 16.sp,
-        letterSpacing = 0.5.sp
-    )
-    */
 )
