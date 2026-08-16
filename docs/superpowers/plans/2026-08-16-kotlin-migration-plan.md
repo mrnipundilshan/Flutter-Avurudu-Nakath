@@ -6,12 +6,12 @@
 
 **Architecture:** Single-activity Compose app. `MainActivity` hosts a `NavHost` (androidx.navigation:navigation-compose) with two routes (`getStart`, `home`). Countdown state ticks via `LaunchedEffect` + `delay(1000)` loops. Notifications scheduled per-event via `AlarmManager.setExactAndAllowWhileIdle`, delivered via `BroadcastReceiver`, re-armed on boot.
 
-**Tech Stack:** Kotlin 2.2.10, Jetpack Compose (BOM 2026.02.01), Material3, androidx.navigation:navigation-compose, AlarmManager (no external notification library needed), AGP 9.3.1, minSdk 24 / targetSdk 36 / compileSdk 36.
+**Tech Stack:** Kotlin 2.2.10, Jetpack Compose (BOM 2026.02.01), Material3, androidx.navigation:navigation-compose, AlarmManager (no external notification library needed), AGP 9.3.1, minSdk 24 / targetSdk 36 / compileSdk 37.
 
 ## Global Constraints
 
 - Package/namespace: `com.aurudu.app` (already set in scaffold — do not change).
-- minSdk 24, targetSdk 36, compileSdk 36 — do not change existing values in `app/build.gradle.kts`.
+- minSdk 24, targetSdk 36, compileSdk 37 — do not change existing values in `app/build.gradle.kts`. (Amended during Task 3: compileSdk was bumped 36→37 because androidx.core:core-ktx 1.19.0 and androidx.lifecycle:lifecycle-viewmodel-compose-android 2.11.0, already pinned in the Task-1 scaffold, require compileSdk ≥37 — `testDebugUnitTest`/`assembleDebug` fail otherwise. User confirmed bumping compileSdk over pinning older dependency versions.)
 - All Sinhala/Tamil user-facing strings must be copied verbatim from the Flutter source (`lib/data/data.dart`, `lib/GetStartPage.dart`, `lib/HomePage.dart`) — no retranslation, no wording changes.
 - Colors: `#FFBE45` (primary/scaffold bg), `#FFD485` (gradient top), `#FFF1D6` (secondary/card bg), `#FFE3AE` (countdown box bg) — exact hex values, copied from `lib/main.dart` and container files.
 - Fonts: 5 custom Sinhala fonts (`UN-Disapamok`, `UN-Indeewaree`, `UN-Arundathee`, `UN-Gurulugomi`, `UN-Ganganee`), sourced from `assets/fonts/*.ttf` in the Flutter repo, same family-to-usage mapping as Flutter (see Task 4).
