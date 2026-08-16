@@ -41,12 +41,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aurudu.app.R
-import com.aurudu.app.data.Language
 import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
 
 @Composable
-fun GetStartScreen(onLanguageSelected: (Language) -> Unit) {
+fun GetStartScreen(onContinue: () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition(label = "sun")
     val sunRotation by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -141,8 +140,8 @@ fun GetStartScreen(onLanguageSelected: (Language) -> Unit) {
             // The offset-positioned children below don't contribute to measured
             // content height (Modifier.offset is draw/placement-only), so without
             // this explicit min height the verticalScroll above would have zero
-            // scrollable range and the lowest button (Tamil, at y=694.dp+50.dp
-            // tall) could be clipped off-screen with no way to reach it.
+            // scrollable range and the button (at y=630.dp+50.dp tall) could be
+            // clipped off-screen with no way to reach it.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -159,19 +158,8 @@ fun GetStartScreen(onLanguageSelected: (Language) -> Unit) {
                         .offset(y = 330.dp),
                 )
 
-                Text(
-                    text = "புத்தாண்டு வாழ்த்துக்கள்",
-                    fontFamily = AppFonts.Disapamok,
-                    fontWeight = FontWeight.ExtraBold,
-                    fontSize = 14.sp,
-                    color = Color.Black,
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .offset(y = 548.dp),
-                )
-
                 Button(
-                    onClick = { onLanguageSelected(Language.SINHALA) },
+                    onClick = onContinue,
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
                     modifier = Modifier
@@ -180,18 +168,6 @@ fun GetStartScreen(onLanguageSelected: (Language) -> Unit) {
                         .size(width = 300.dp, height = 50.dp),
                 ) {
                     Text(text = "සිංහල", fontSize = 25.sp)
-                }
-
-                Button(
-                    onClick = { onLanguageSelected(Language.TAMIL) },
-                    shape = RoundedCornerShape(14.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
-                    modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .offset(y = 694.dp)
-                        .size(width = 300.dp, height = 50.dp),
-                ) {
-                    Text(text = "தமிழ்", fontSize = 25.sp)
                 }
             }
         }

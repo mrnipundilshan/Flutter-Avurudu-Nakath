@@ -6,11 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import com.aurudu.app.data.Event
-import com.aurudu.app.data.Language
-import com.aurudu.app.data.LanguagePreference
 import com.aurudu.app.data.eventList
-import com.aurudu.app.data.localizedDescription
-import com.aurudu.app.data.localizedName
 import com.aurudu.app.util.DateTimeUtils
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -20,13 +16,12 @@ object NotificationScheduler {
     fun scheduleAll(
         context: Context,
         events: List<Event> = eventList,
-        language: Language = LanguagePreference.get(context),
     ) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val now = LocalDateTime.now()
 
         events.forEach { event ->
-            alarmManager.cancel(pendingIntentFor(context, event, language))
+            alarmManager.cancel(pendingIntentFor(context, event))
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !alarmManager.canScheduleExactAlarms()) {
@@ -40,17 +35,17 @@ object NotificationScheduler {
                 alarmManager.setExactAndAllowWhileIdle(
                     AlarmManager.RTC_WAKEUP,
                     triggerAtMillis,
-                    pendingIntentFor(context, event, language)
+                    pendingIntentFor(context, event)
                 )
             }
         }
     }
 
-    private fun pendingIntentFor(context: Context, event: Event, language: Language): PendingIntent {
+    private fun pendingIntentFor(context: Context, event: Event): PendingIntent {
         val intent = Intent(context, AlarmReceiver::class.java).apply {
             putExtra(AlarmReceiver.EXTRA_EVENT_ID, event.id)
-            putExtra(AlarmReceiver.EXTRA_EVENT_NAME, event.localizedName(language))
-            putExtra(AlarmReceiver.EXTRA_EVENT_DESCRIPTION, event.localizedDescription(language))
+            putExtra(AlarmReceiver.EXTRA_EVENT_NAME, event.name)
+            putExtra(AlarmReceiver.EXTRA_EVENT_DESCRIPTION, event.description)
         }
         return PendingIntent.getBroadcast(
             context,

@@ -33,9 +33,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.aurudu.app.data.Event
-import com.aurudu.app.data.Language
-import com.aurudu.app.data.localizedDescription
-import com.aurudu.app.data.localizedName
 import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
 import com.aurudu.app.util.DateTimeUtils
@@ -43,7 +40,7 @@ import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 
 @Composable
-fun EventPopupDialog(event: Event, language: Language = Language.SINHALA, onDismiss: () -> Unit) {
+fun EventPopupDialog(event: Event, onDismiss: () -> Unit) {
     var countdown by remember {
         mutableStateOf(
             DateTimeUtils.countdownParts(DateTimeUtils.parseDateTime(event.date, event.time))
@@ -90,8 +87,8 @@ fun EventPopupDialog(event: Event, language: Language = Language.SINHALA, onDism
             )
 
             Text(
-                text = event.localizedName(language),
-                fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
+                text = event.name,
+                fontFamily = AppFonts.Indeewaree,
                 fontWeight = FontWeight.Medium,
                 fontSize = 26.sp,
                 color = Color.Black,
@@ -120,19 +117,15 @@ fun EventPopupDialog(event: Event, language: Language = Language.SINHALA, onDism
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-                val daysLabel = if (language == Language.TAMIL) "நாட்கள்:" else "දින:"
-                val hoursLabel = if (language == Language.TAMIL) "மணி:" else "පැය:"
-                val minutesLabel = if (language == Language.TAMIL) "நிமி:" else "මිනි:"
-                val secondsLabel = if (language == Language.TAMIL) "வினா:" else "තත්:"
-                PopupCountdownItem(daysLabel, countdown.days, language)
-                PopupCountdownItem(hoursLabel, countdown.hours, language)
-                PopupCountdownItem(minutesLabel, countdown.minutes, language)
-                PopupCountdownItem(secondsLabel, countdown.seconds, language)
+                PopupCountdownItem("දින:", countdown.days)
+                PopupCountdownItem("පැය:", countdown.hours)
+                PopupCountdownItem("මිනි:", countdown.minutes)
+                PopupCountdownItem("තත්:", countdown.seconds)
             }
 
             Text(
-                text = event.localizedDescription(language),
-                fontFamily = AppFonts.forLanguage(language, AppFonts.Ganganee),
+                text = event.description,
+                fontFamily = AppFonts.Ganganee,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp,
                 color = Color.Black,
@@ -144,13 +137,13 @@ fun EventPopupDialog(event: Event, language: Language = Language.SINHALA, onDism
 }
 
 @Composable
-private fun PopupCountdownItem(label: String, value: String, language: Language) {
+private fun PopupCountdownItem(label: String, value: String) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = label,
-            fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
+            fontFamily = AppFonts.Indeewaree,
             fontWeight = FontWeight.Medium,
-            fontSize = if (language == Language.TAMIL) 13.sp else 16.sp,
+            fontSize = 16.sp,
             color = Color.Black,
             maxLines = 1,
         )
