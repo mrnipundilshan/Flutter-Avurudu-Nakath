@@ -5,12 +5,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.aurudu.app.ui.screens.GetStartScreen
+import com.aurudu.app.ui.screens.HomeScreen
 import com.aurudu.app.ui.theme.AvurudunakathTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,29 +21,27 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             AvurudunakathTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+                AppNavHost()
             }
         }
     }
 }
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AvurudunakathTheme {
-        Greeting("Android")
+private fun AppNavHost() {
+    val navController = rememberNavController()
+    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        NavHost(
+            navController = navController,
+            startDestination = "getStart",
+            modifier = Modifier,
+        ) {
+            composable("getStart") {
+                GetStartScreen(onSinhalaSelected = { navController.navigate("home") })
+            }
+            composable("home") {
+                HomeScreen()
+            }
+        }
     }
 }
