@@ -41,6 +41,19 @@ class NotificationService {
           IOSFlutterLocalNotificationsPlugin
         >()
         ?.requestPermissions(alert: true, badge: true, sound: true);
+
+    // Request permissions for Android (version 13+)
+    final androidPlugin =
+        _notificationsPlugin
+            .resolvePlatformSpecificImplementation<
+              AndroidFlutterLocalNotificationsPlugin
+            >();
+
+    if (androidPlugin != null) {
+      await androidPlugin.requestNotificationsPermission();
+      // On Android 12+, we need to request exact alarm permission if we want to use exact alarms
+      await androidPlugin.requestExactAlarmsPermission();
+    }
   }
 
   // Schedule notifications for all events in the data list

@@ -44,7 +44,13 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     _scrollController.addListener(_scrollListener);
 
-    // Find the next event
+    // Initialize with a default value to prevent LateInitializationError
+    if (dataList.isNotEmpty) {
+      nextEvent = dataList[0];
+      nextEventId = dataList[0].id;
+    }
+
+    // Find the actual next event
     _updateNextEvent();
 
     // Start the countdown timer
@@ -104,6 +110,12 @@ class _HomePageState extends State<HomePage> {
       setState(() {
         nextEvent = upcomingEvent!;
         nextEventId = upcomingEvent.id;
+      });
+    } else if (dataList.isNotEmpty && !dataList.contains(nextEvent)) {
+      // If no upcoming event is found, and nextEvent wasn't already set to something valid
+      // keep the default or previous value, but ensure nextEventId is consistent
+      setState(() {
+        nextEventId = nextEvent.id;
       });
     }
   }
@@ -177,8 +189,16 @@ class _HomePageState extends State<HomePage> {
     // If the target date is in the past, stop countdown and check for next event
     if (difference.isNegative) {
       _updateNextEvent();
-      // Restart the countdown with the new next event
-      _restartCountdown();
+
+      // Only restart countdown if the target date has actually changed to a future date
+      // to avoid infinite recursion if no future events exist
+      final newTargetDateTime = _parseDateTime(nextEvent.date, nextEvent.time);
+      if (!newTargetDateTime.difference(now).isNegative) {
+        _restartCountdown();
+      } else {
+        // If still in the past, just stop the timer for now
+        _countdownTimer?.cancel();
+      }
       return;
     }
 

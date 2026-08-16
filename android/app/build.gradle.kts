@@ -13,7 +13,7 @@ android {
     namespace = "com.aurudu.app"
     compileSdk = 35
     //compileSdk = flutter.compileSdkVersion  
-    ndkVersion = "29.0.13113456"
+    ndkVersion = "29.0.14206865"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -33,8 +33,8 @@ android {
         minSdk = flutter.minSdkVersion
         targetSdk = 35
         //targetSdk = flutter.targetSdkVersion
-        versionCode = 4
-        versionName = flutter.versionName
+        versionCode = 5
+        versionName = "1.5"
     }
 
     // Load keystore properties
@@ -67,7 +67,7 @@ android {
     
 
 dependencies {
-    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.8.22")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:2.1.0")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4") // Correct syntax for Kotlin DSL
   
 }
