@@ -1,5 +1,6 @@
 package com.aurudu.app.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -35,6 +36,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.ContentScale.Companion.FillWidth
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aurudu.app.R
@@ -42,6 +44,7 @@ import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
 import kotlinx.coroutines.delay
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun GetStartScreen(onContinue: () -> Unit) {
     val infiniteTransition = rememberInfiniteTransition(label = "sun")
@@ -147,10 +150,12 @@ fun GetStartScreen(onContinue: () -> Unit) {
                     .heightIn(min = 780.dp),
             ) {
                 Text(
-                    text = "අපේ අවුරුදු නැකැත්",
+                    text = "අපේ අවුරුදු නැකැත්\n2026",
+                    lineHeight = 80.sp,
                     fontFamily = AppFonts.Disapamok,
                     fontWeight = FontWeight.Medium,
-                    fontSize = 48.sp,
+                    textAlign = TextAlign.Center,
+                    fontSize = 75.sp,
                     color = Color.Black,
                     modifier = Modifier
                         .align(Alignment.TopCenter)
