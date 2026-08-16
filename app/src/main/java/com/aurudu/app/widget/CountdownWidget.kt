@@ -8,6 +8,8 @@ import androidx.compose.ui.unit.sp
 import androidx.glance.GlanceComposable
 import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
+import androidx.glance.Image
+import androidx.glance.ImageProvider
 import androidx.glance.action.actionStartActivity
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
@@ -17,9 +19,12 @@ import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.unit.ColorProvider
 import androidx.glance.layout.Alignment
+import androidx.glance.layout.Box
 import androidx.glance.layout.Column
+import androidx.glance.layout.ContentScale
 import androidx.glance.layout.Row
 import androidx.glance.layout.Spacer
+import androidx.glance.layout.fillMaxSize
 import androidx.glance.layout.fillMaxWidth
 import androidx.glance.layout.padding
 import androidx.glance.layout.size
@@ -29,12 +34,14 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextAlign
 import androidx.glance.text.TextStyle
 import com.aurudu.app.MainActivity
+import com.aurudu.app.R
 import com.aurudu.app.data.Event
 import com.aurudu.app.data.eventList
+import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.util.DateTimeUtils
 import java.time.LocalDateTime
 
-private val CardBackground = Color.White
+private val CardBackground = AppColors.SecondaryCard
 private val TextColor = Color.Black
 private val DigitBoxBackground = Color(0xFFFFE3AE)
 
@@ -61,38 +68,59 @@ private fun CountdownWidgetContent(event: Event, countdown: DateTimeUtils.Countd
     // Seconds are intentionally omitted: the widget refreshes once a minute
     // (see WidgetUpdateScheduler), so a seconds digit would just sit stale
     // between ticks instead of reflecting reality.
-    Column(
+    Box(
         modifier = GlanceModifier
             .fillMaxWidth()
             .background(CardBackground)
             .cornerRadius(14.dp)
-            .clickable(actionStartActivity<MainActivity>())
-            .padding(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 10.dp),
-        horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+            .clickable(actionStartActivity<MainActivity>()),
     ) {
-        Text(
-            text = event.name,
-            style = TextStyle(
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Medium,
-                color = ColorProvider(TextColor),
-                textAlign = TextAlign.Center,
-            ),
-            modifier = GlanceModifier.fillMaxWidth(),
+        Image(
+            provider = ImageProvider(R.drawable.bg1),
+            contentDescription = null,
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .padding(end = 300.dp, top = (-100).dp),
+            contentScale = ContentScale.Crop,
         )
-        Spacer(modifier = GlanceModifier.size(10.dp))
-        Row(horizontalAlignment = Alignment.Horizontal.CenterHorizontally) {
-            CountdownItem("දින", countdown.days)
-            Spacer(modifier = GlanceModifier.width(10.dp))
-            CountdownItem("පැය", countdown.hours)
-            Spacer(modifier = GlanceModifier.width(10.dp))
-            CountdownItem("මිනි", countdown.minutes)
+        Image(
+            provider = ImageProvider(R.drawable.bg2),
+            contentDescription = null,
+            modifier = GlanceModifier
+                .fillMaxSize()
+                .padding(start = 240.dp, top = (-60).dp),
+            contentScale = ContentScale.Crop,
+        )
+        Column(
+            modifier = GlanceModifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 10.dp),
+            horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
+        ) {
+            Text(
+                text = event.name,
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = ColorProvider(TextColor),
+                    textAlign = TextAlign.Center,
+                ),
+                modifier = GlanceModifier.fillMaxWidth(),
+            )
+            Spacer(modifier = GlanceModifier.size(10.dp))
+            Row(horizontalAlignment = Alignment.Horizontal.CenterHorizontally) {
+                CountdownItem("දින", countdown.days)
+                Spacer(modifier = GlanceModifier.width(10.dp))
+                CountdownItem("පැය", countdown.hours)
+                Spacer(modifier = GlanceModifier.width(10.dp))
+                CountdownItem("මිනි", countdown.minutes)
+            }
+            Spacer(modifier = GlanceModifier.size(10.dp))
+            Text(
+                text = event.description.take(220),
+                style = TextStyle(fontSize = 12.sp, color = ColorProvider(TextColor)),
+            )
         }
-        Spacer(modifier = GlanceModifier.size(10.dp))
-        Text(
-            text = event.description.take(220),
-            style = TextStyle(fontSize = 12.sp, color = ColorProvider(TextColor)),
-        )
     }
 }
 

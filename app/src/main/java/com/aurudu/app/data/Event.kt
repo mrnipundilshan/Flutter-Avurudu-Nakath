@@ -92,4 +92,12 @@ val eventList: List<Event> = listOf(
         description = "අප්‍රේල් මස 23 වැනි බ්‍රහස්පතින්දා රන්වන් පැහැති වස්ත්‍රාභරණයෙන් සැරසී පූර්ව භාග 11.36 ට උතුරු දිශාව බලා පැළ සිටුවීම මැනවි.",
         drawableRes = R.drawable.nakath2,
     ),
+    Event(
+        id = 10,
+        name = "2027 අලුත් අවුරුදු උදාව",
+        time = "00:01 AM",
+        date = "2027-04-13",
+        description = "මීලග අලුත් අවුරුද්ද උදාවන තුරු ඔබට සුබම සුබ නව වසරක් වේවා...",
+        drawableRes = R.drawable.nakath2,
+    ),
 )
