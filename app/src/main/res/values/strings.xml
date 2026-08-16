@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">avurudunakath</string>
+    <string name="widget_description">Countdown to the next Aurudu event</string>
 </resources>

@@ -62,6 +62,9 @@ import com.aurudu.app.ui.theme.AppFonts
 import com.aurudu.app.util.DateTimeUtils
 import kotlinx.coroutines.delay
 import java.time.LocalDateTime
+import androidx.core.net.toUri
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import kotlin.time.Duration.Companion.milliseconds
 
 @Composable
 fun HomeScreen() {
@@ -97,7 +100,7 @@ fun HomeScreen() {
             if (!alarmManager.canScheduleExactAlarms()) {
                 exactAlarmPromptShown = true
                 val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
-                    data = Uri.parse("package:${context.packageName}")
+                    data = "package:${context.packageName}".toUri()
                 }
                 try {
                     context.startActivity(intent)
@@ -111,7 +114,7 @@ fun HomeScreen() {
     // Re-attempt scheduling on every resume so returning from the exact-alarm
     // Settings screen (having granted the permission) actually retries the
     // scheduling that silently no-ops while the permission is still missing.
-    val lifecycleOwner = LocalLifecycleOwner.current
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
@@ -139,7 +142,7 @@ fun HomeScreen() {
             if (!target.isAfter(now)) {
                 nextEvent = DateTimeUtils.nextUpcomingEvent(eventList) ?: nextEvent
             }
-            delay(1000)
+            delay(1000.milliseconds)
         }
     }
 
