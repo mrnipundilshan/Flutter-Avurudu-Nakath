@@ -117,7 +117,7 @@ private fun CountdownWidgetContent(event: Event, countdown: DateTimeUtils.Countd
             }
             Spacer(modifier = GlanceModifier.size(10.dp))
             Text(
-                text = event.description.take(220),
+                text = event.description.take(255),
                 style = TextStyle(fontSize = 12.sp, color = ColorProvider(TextColor)),
             )
         }
