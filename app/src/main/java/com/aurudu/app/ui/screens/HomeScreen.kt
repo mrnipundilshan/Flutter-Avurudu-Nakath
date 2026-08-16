@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,9 +64,15 @@ import java.time.LocalDateTime
 fun HomeScreen() {
     val context = LocalContext.current
 
+    // Tracks whether the POST_NOTIFICATIONS request has been answered (or
+    // was never needed below API 33), so the exact-alarm prompt below can
+    // wait for the actual result instead of guessing with a fixed delay.
+    var notificationAskDone by remember {
+        mutableStateOf(Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU)
+    }
     val notificationPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
-    ) { /* result ignored — NotificationHelper re-checks at fire time */ }
+    ) { _ -> notificationAskDone = true }
 
     // One-time POST_NOTIFICATIONS request on first composition.
     LaunchedEffect(Unit) {
@@ -74,14 +81,15 @@ fun HomeScreen() {
         }
     }
 
-    // Exact-alarm Settings intent: delayed so it doesn't launch in the same
-    // frame as the POST_NOTIFICATIONS dialog above (which would dismiss it
-    // before the user can respond), and gated to fire at most once per
-    // process lifetime.
-    var exactAlarmPromptShown by remember { mutableStateOf(false) }
-    LaunchedEffect(Unit) {
+    // Exact-alarm Settings intent: waits for the POST_NOTIFICATIONS dialog to
+    // actually be answered (rather than a fixed delay) so it doesn't launch
+    // on top of it, and is gated to fire at most once per process lifetime
+    // (surviving Activity recreation via rememberSaveable, since returning
+    // from the exact-alarm Settings screen recreates the Activity).
+    var exactAlarmPromptShown by rememberSaveable { mutableStateOf(false) }
+    LaunchedEffect(notificationAskDone) {
+        if (!notificationAskDone) return@LaunchedEffect
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S && !exactAlarmPromptShown) {
-            delay(500)
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             if (!alarmManager.canScheduleExactAlarms()) {
                 exactAlarmPromptShown = true
