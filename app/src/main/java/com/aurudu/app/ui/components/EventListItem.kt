@@ -14,11 +14,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aurudu.app.data.Event
+import com.aurudu.app.data.Language
+import com.aurudu.app.data.localizedDescription
+import com.aurudu.app.data.localizedName
 import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
 
 @Composable
-fun EventListItem(event: Event, onClick: () -> Unit) {
+fun EventListItem(event: Event, language: Language = Language.SINHALA, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,15 +31,15 @@ fun EventListItem(event: Event, onClick: () -> Unit) {
             .padding(16.dp),
     ) {
         Text(
-            text = event.name,
-            fontFamily = AppFonts.Indeewaree,
+            text = event.localizedName(language),
+            fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
             fontWeight = FontWeight.Medium,
             fontSize = 22.sp,
             color = Color.Black,
         )
         Text(
-            text = event.description,
-            fontFamily = AppFonts.Ganganee,
+            text = event.localizedDescription(language),
+            fontFamily = AppFonts.forLanguage(language, AppFonts.Ganganee),
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             color = Color.Black,

@@ -41,11 +41,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aurudu.app.R
+import com.aurudu.app.data.Language
 import com.aurudu.app.ui.theme.AppColors
 import com.aurudu.app.ui.theme.AppFonts
 
 @Composable
-fun GetStartScreen(onSinhalaSelected: () -> Unit) {
+fun GetStartScreen(onLanguageSelected: (Language) -> Unit) {
     val infiniteTransition = rememberInfiniteTransition(label = "sun")
     val sunRotation by infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -170,7 +171,7 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
                 )
 
                 Button(
-                    onClick = onSinhalaSelected,
+                    onClick = { onLanguageSelected(Language.SINHALA) },
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
                     modifier = Modifier
@@ -182,7 +183,7 @@ fun GetStartScreen(onSinhalaSelected: () -> Unit) {
                 }
 
                 Button(
-                    onClick = { /* Tamil not yet supported — matches Flutter placeholder */ },
+                    onClick = { onLanguageSelected(Language.TAMIL) },
                     shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color.White, contentColor = Color.Black),
                     modifier = Modifier

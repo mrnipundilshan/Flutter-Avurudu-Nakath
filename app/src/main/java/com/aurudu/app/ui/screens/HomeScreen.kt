@@ -49,7 +49,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import com.aurudu.app.R
 import com.aurudu.app.data.Event
+import com.aurudu.app.data.Language
 import com.aurudu.app.data.eventList
+import com.aurudu.app.data.localizedDescription
+import com.aurudu.app.data.localizedName
 import com.aurudu.app.notification.NotificationScheduler
 import com.aurudu.app.ui.components.CountdownBox
 import com.aurudu.app.ui.components.EventListItem
@@ -61,7 +64,7 @@ import kotlinx.coroutines.delay
 import java.time.LocalDateTime
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(language: Language = Language.SINHALA) {
     val context = LocalContext.current
 
     // Tracks whether the POST_NOTIFICATIONS request has been answered (or
@@ -112,7 +115,7 @@ fun HomeScreen() {
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                NotificationScheduler.scheduleAll(context)
+                NotificationScheduler.scheduleAll(context, language = language)
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -158,8 +161,8 @@ fun HomeScreen() {
         ) {
             item {
                 Text(
-                    text = "සුභ අළුත් අවුරුද්දක් වේවා",
-                    fontFamily = AppFonts.Disapamok,
+                    text = if (language == Language.TAMIL) "இனிய புத்தாண்டு வாழ்த்துக்கள்" else "සුභ අළුත් අවුරුද්දක් වේවා",
+                    fontFamily = AppFonts.forLanguage(language, AppFonts.Disapamok),
                     fontWeight = FontWeight.Medium,
                     fontSize = 36.sp,
                     color = Color.Black,
@@ -173,6 +176,7 @@ fun HomeScreen() {
                 HomeCountdownCard(
                     event = nextEvent,
                     countdown = countdown,
+                    language = language,
                     onClick = { selectedEvent = nextEvent },
                     modifier = Modifier.padding(horizontal = 24.dp),
                 )
@@ -191,14 +195,14 @@ fun HomeScreen() {
 
             items(eventList) { event ->
                 Box(modifier = Modifier.padding(horizontal = 24.dp)) {
-                    EventListItem(event = event, onClick = { selectedEvent = event })
+                    EventListItem(event = event, language = language, onClick = { selectedEvent = event })
                 }
             }
         }
     }
 
     selectedEvent?.let { event ->
-        EventPopupDialog(event = event, onDismiss = { selectedEvent = null })
+        EventPopupDialog(event = event, language = language, onDismiss = { selectedEvent = null })
     }
 }
 
@@ -206,6 +210,7 @@ fun HomeScreen() {
 private fun HomeCountdownCard(
     event: Event,
     countdown: DateTimeUtils.CountdownParts,
+    language: Language,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -216,9 +221,10 @@ private fun HomeCountdownCard(
             .clickable(onClick = onClick)
             .padding(top = 10.dp, start = 20.dp, end = 20.dp, bottom = 16.dp),
     ) {
+        val nextEventLabel = if (language == Language.TAMIL) "அடுத்த நேரம்" else "මීළඟ නැකත"
         Text(
-            text = "මීළඟ නැකත: ${event.name}",
-            fontFamily = AppFonts.Indeewaree,
+            text = "$nextEventLabel: ${event.localizedName(language)}",
+            fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
             fontWeight = FontWeight.Medium,
             fontSize = 26.sp,
             color = Color.Black,
@@ -227,18 +233,22 @@ private fun HomeCountdownCard(
             modifier = Modifier.padding(top = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            CountdownLabel("දින:")
+            val daysLabel = if (language == Language.TAMIL) "நாட்கள்:" else "දින:"
+            val hoursLabel = if (language == Language.TAMIL) "மணி:" else "පැය:"
+            val minutesLabel = if (language == Language.TAMIL) "நிமி:" else "මිනි:"
+            val secondsLabel = if (language == Language.TAMIL) "வினா:" else "තත්:"
+            CountdownLabel(daysLabel, language)
             CountdownBox(countdown.days)
-            CountdownLabel("පැය:")
+            CountdownLabel(hoursLabel, language)
             CountdownBox(countdown.hours)
-            CountdownLabel("මිනි:")
+            CountdownLabel(minutesLabel, language)
             CountdownBox(countdown.minutes)
-            CountdownLabel("තත්:")
+            CountdownLabel(secondsLabel, language)
             CountdownBox(countdown.seconds)
         }
         Text(
-            text = event.description,
-            fontFamily = AppFonts.Gurulugomi,
+            text = event.localizedDescription(language),
+            fontFamily = AppFonts.forLanguage(language, AppFonts.Gurulugomi),
             fontWeight = FontWeight.Medium,
             fontSize = 16.sp,
             color = Color.Black,
@@ -249,10 +259,10 @@ private fun HomeCountdownCard(
 }
 
 @Composable
-private fun CountdownLabel(text: String) {
+private fun CountdownLabel(text: String, language: Language) {
     Text(
         text = text,
-        fontFamily = AppFonts.Indeewaree,
+        fontFamily = AppFonts.forLanguage(language, AppFonts.Indeewaree),
         fontWeight = FontWeight.Medium,
         fontSize = 18.sp,
         color = Color.Black,

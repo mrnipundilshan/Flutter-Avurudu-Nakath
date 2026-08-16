@@ -7,6 +7,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.aurudu.app.R
+import com.aurudu.app.data.Language
 
 object AppFonts {
     val Disapamok = FontFamily(Font(R.font.un_disapamok, FontWeight.Normal))
@@ -14,6 +15,11 @@ object AppFonts {
     val Arundathee = FontFamily(Font(R.font.un_arundathee, FontWeight.Normal))
     val Gurulugomi = FontFamily(Font(R.font.un_gurulugomi, FontWeight.Normal))
     val Ganganee = FontFamily(Font(R.font.un_ganganee, FontWeight.Normal))
+
+    // The bundled fonts above only carry Sinhala glyphs, so Tamil text falls
+    // back to the system default font (which resolves to a Tamil-capable face).
+    fun forLanguage(language: Language, sinhalaFont: FontFamily): FontFamily =
+        if (language == Language.TAMIL) FontFamily.Default else sinhalaFont
 }
 
 val Typography = Typography(
