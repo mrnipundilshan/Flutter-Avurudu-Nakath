@@ -67,7 +67,7 @@ private fun CountdownWidgetContent(event: Event, countdown: DateTimeUtils.Countd
             .background(CardBackground)
             .cornerRadius(14.dp)
             .clickable(actionStartActivity<MainActivity>())
-            .padding(16.dp),
+            .padding(start = 16.dp, top = 10.dp, end = 16.dp, bottom = 10.dp),
         horizontalAlignment = Alignment.Horizontal.CenterHorizontally,
     ) {
         Text(
@@ -90,7 +90,7 @@ private fun CountdownWidgetContent(event: Event, countdown: DateTimeUtils.Countd
         }
         Spacer(modifier = GlanceModifier.size(10.dp))
         Text(
-            text = event.description.take(60),
+            text = event.description.take(220),
             style = TextStyle(fontSize = 12.sp, color = ColorProvider(TextColor)),
         )
     }
